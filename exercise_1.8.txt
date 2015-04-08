@@ -1,0 +1,21 @@
+(define (power-d x y result)
+ (if (> y 1)
+  (power-d x (- y 1) (* result x))
+  result))
+
+(define (power x y)
+ (power-d x y x))
+
+(define (improve guess x)
+ (/ (+ (/ x (power guess 3)) (* 2 guess)) 3))
+
+(define (good-enough? guess x)
+  (< (abs (- (power guess 3) x)) 5)) # this threshold isn't working out at all
+
+(define (cuberoot-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (cuberoot-iter (improve guess x) x)))
+
+(define (cuberoot x)
+  (cuberoot-iter 1.0 x))
