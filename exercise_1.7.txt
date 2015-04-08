@@ -15,3 +15,43 @@ if x is really small, then y has to be y times smaller than itself. Meaning, y's
 you see the precision getting unweildly in the perspective of computing when subtracting each miniscule guess n number of times before reaching the desired threshold
 
 if x is really large, y guesses need to average out much more frequently to approach the threshold -- it takes longer to reach
+
+
+the solution:
+
+(define (average x y)
+ (/ (+ x y) 2))
+
+(define (improve guess x)
+ (average guess (/ x guess)))
+
+(define (good-enough-d? guess oldguess)
+ (if (= oldguess 0)
+  false
+  (< (- guess oldguess) 0.01)))
+
+(define (sqrt-iter-d guess x oldguess)
+ (if (good-enough-d? guess oldguess)
+  guess
+  (sqrt-iter-d (improve guess x) x guess)))
+
+(define (sqrt-iter guess x)
+ (sqrt-iter-d guess x 0))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
+
+
+It looks like the larger the number, the worse the guess is because it doesn't iterate precisely enough. This works really well for small numbers. My original understanding was around how easiy it'll be to reach a guess, but didn't account for the farther spaced out guesses are, the easier it is to reach the 0.01 difference threshold I've set here since it's asymptotic, and on that end, and is very inaccurate at that point
+
+My solution isn't good enough so I continued to see the inaccuracy for larger numbers because mine is a constant tolerance instead of a linear tolerance that would adapt better:
+from an online soltn
+(define (good-enough-online? guess oldguess)
+ (< (/ (- a b) a) 0.001))
+
+If you simplify this mathematically, you get
+
+(define (good-enough-online? guess oldguess)
+ (< (* 0.999 guess) oldguess))
+
+which makes the guess and oldguess vary linearly rather than a constant that's inaccurate (if the function is parabolic, its derivative...i.e. "good enough o meter" should be linear)
